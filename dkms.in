@@ -1328,7 +1328,6 @@ do_install()
     local count
     lib_tree="$install_tree/$kernelver"
 
-    echo ""
     for ((count=0; count < ${#built_module_name[@]}; count++)); do
         # Check this version against what is already in the kernel
         check_version_sanity "$kernelver" "$arch" "$obsolete_by" "${dest_module_name[$count]}" || continue
