@@ -131,7 +131,7 @@ invoke_command()
         wait "$progresspid" 2>/dev/null
     fi
 
-    if (( exitval > 0)); then
+    if (( exitval > 0 )); then
         echo -en "(bad exit status: $exitval)"
         # Print the failing command without the clunky redirection
         [[ ! $verbose ]] && echo -en "\nFailed command:\n$1"
@@ -1455,7 +1455,7 @@ list_each_installed_module()
 # A module can only be in this broken state, if the user or a faulty program
 # messed up. The module then is considered volatile, because there is no reliable
 # way to tell if files in the source tree are still in a valid state.
-# Therefor any action (except 'add', if only the symlink is missing)
+# Therefore any action (except 'add', if only the symlink is missing)
 # to operate on the module has to be refused.
 # Manual intervention by the user is required to return to a sane state.
 is_module_broken() {
