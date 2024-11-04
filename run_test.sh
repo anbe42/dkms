@@ -227,6 +227,17 @@ run_with_expected_error() {
     rm ${expected_output_log} ${output_log}
 }
 
+check_module_source_tree_created() {
+    if ! [[ -d "$1" ]] ; then
+        echo >&2 "Error: directory '$1' was not created"
+        exit 1
+    fi
+    if ! [[ -f "$1/dkms.conf" ]] ; then
+        echo >&2 "Error: '$1/dkms.conf' was not found"
+        exit 1
+    fi
+}
+
 # sig_hashalgo itself may show bogus value if kmod version < 26
 kmod_broken_hashalgo() {
     local -ri kmod_ver=$(kmod --version | grep version | cut -f 3 -d ' ')
@@ -308,13 +319,10 @@ echo 'Adding the test module by directory'
 run_with_expected_output dkms add test/dkms_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_test/1.0/source -> /usr/src/dkms_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_test-1.0
 run_status_with_expected_output 'dkms_test' << EOF
 dkms_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_test-1.0 was not created'
-    exit 1
-fi
 
 echo 'Adding the test module again (expected error)'
 run_with_expected_error 3 dkms add test/dkms_test-1.0 << EOF
@@ -696,13 +704,10 @@ echo 'Adding the noautoinstall test module by directory'
 run_with_expected_output dkms add test/dkms_noautoinstall_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_noautoinstall_test/1.0/source -> /usr/src/dkms_noautoinstall_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_noautoinstall_test-1.0
 run_status_with_expected_output 'dkms_noautoinstall_test' << EOF
 dkms_noautoinstall_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_noautoinstall_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_noautoinstall_test-1.0 was not created'
-    exit 1
-fi
 
 echo "Running dkms autoinstall"
 run_with_expected_output dkms autoinstall -k "${KERNEL_VER}" << EOF
@@ -884,24 +889,18 @@ echo 'Adding the multiver test modules by directory'
 run_with_expected_output dkms add test/dkms_multiver_test/1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_multiver_test/1.0/source -> /usr/src/dkms_multiver_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_multiver_test-1.0
 run_status_with_expected_output 'dkms_multiver_test' << EOF
 dkms_multiver_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_multiver_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_multiver_test-1.0 was not created'
-    exit 1
-fi
 run_with_expected_output dkms add test/dkms_multiver_test/2.0 << EOF
 Creating symlink /var/lib/dkms/dkms_multiver_test/2.0/source -> /usr/src/dkms_multiver_test-2.0
 EOF
+check_module_source_tree_created /usr/src/dkms_multiver_test-2.0
 run_status_with_expected_output 'dkms_multiver_test' << EOF
 dkms_multiver_test/1.0: added
 dkms_multiver_test/2.0: added
 EOF
-if ! [[ -d /usr/src/dkms_multiver_test-2.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_multiver_test-2.0 was not created'
-    exit 1
-fi
 
 echo 'Building the multiver test modules'
 set_signing_message "dkms_multiver_test" "1.0"
@@ -1023,23 +1022,17 @@ echo 'Adding the nover/emptyver test modules by directory'
 run_with_expected_output dkms add test/dkms_nover_test << EOF
 Creating symlink /var/lib/dkms/dkms_nover_test/1.0/source -> /usr/src/dkms_nover_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_nover_test-1.0
 run_status_with_expected_output 'dkms_nover_test' << EOF
 dkms_nover_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_nover_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_nover_test-1.0 was not created'
-    exit 1
-fi
 run_with_expected_output dkms add test/dkms_emptyver_test << EOF
 Creating symlink /var/lib/dkms/dkms_emptyver_test/1.0/source -> /usr/src/dkms_emptyver_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_emptyver_test-1.0
 run_status_with_expected_output 'dkms_emptyver_test' << EOF
 dkms_emptyver_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_emptyver_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_emptyver_test-1.0 was not created'
-    exit 1
-fi
 
 echo 'Building the nover/emptyver test modules'
 set_signing_message "dkms_nover_test" "1.0"
@@ -1142,13 +1135,10 @@ echo 'Adding the nover update test modules 1.0 by directory'
 run_with_expected_output dkms add test/dkms_nover_update_test/1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_nover_update_test/1.0/source -> /usr/src/dkms_nover_update_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_nover_update_test-1.0
 run_status_with_expected_output 'dkms_nover_update_test' << EOF
 dkms_nover_update_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_nover_update_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_nover_update_test-1.0 was not created'
-    exit 1
-fi
 
 echo 'Installing the nover update test 1.0 modules'
 set_signing_message "dkms_nover_update_test" "1.0"
@@ -1167,14 +1157,11 @@ echo 'Adding the nover update test modules 2.0 by directory'
 run_with_expected_output dkms add test/dkms_nover_update_test/2.0 << EOF
 Creating symlink /var/lib/dkms/dkms_nover_update_test/2.0/source -> /usr/src/dkms_nover_update_test-2.0
 EOF
+check_module_source_tree_created /usr/src/dkms_nover_update_test-2.0
 run_status_with_expected_output 'dkms_nover_update_test' << EOF
 dkms_nover_update_test/1.0, ${KERNEL_VER}, ${KERNEL_ARCH}: installed
 dkms_nover_update_test/2.0: added
 EOF
-if ! [[ -d /usr/src/dkms_nover_update_test-2.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_nover_update_test-2.0 was not created'
-    exit 1
-fi
 
 echo 'Installing the nover update test 2.0 modules'
 set_signing_message "dkms_nover_update_test" "2.0"
@@ -1194,15 +1181,12 @@ echo 'Adding the nover update test modules 3.0 by directory'
 run_with_expected_output dkms add test/dkms_nover_update_test/3.0 << EOF
 Creating symlink /var/lib/dkms/dkms_nover_update_test/3.0/source -> /usr/src/dkms_nover_update_test-3.0
 EOF
+check_module_source_tree_created /usr/src/dkms_nover_update_test-3.0
 run_status_with_expected_output 'dkms_nover_update_test' << EOF
 dkms_nover_update_test/1.0, ${KERNEL_VER}, ${KERNEL_ARCH}: built
 dkms_nover_update_test/2.0, ${KERNEL_VER}, ${KERNEL_ARCH}: installed
 dkms_nover_update_test/3.0: added
 EOF
-if ! [[ -d /usr/src/dkms_nover_update_test-3.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_nover_update_test-3.0 was not created'
-    exit 1
-fi
 
 echo 'Building the nover update test 3.0 modules'
 set_signing_message "dkms_nover_update_test" "3.0"
@@ -1271,6 +1255,7 @@ echo 'Adding failing test module by directory'
 run_with_expected_output dkms add test/dkms_failing_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_failing_test/1.0/source -> /usr/src/dkms_failing_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_failing_test-1.0
 echo 'Running autoinstall with failing test module (expected error)'
 run_with_expected_error 11 dkms autoinstall -k "${KERNEL_VER}" << EOF
 Cleaning build area... done.
@@ -1288,6 +1273,7 @@ echo 'Adding test module with dependencies on failing test module by directory'
 run_with_expected_output dkms add test/dkms_dependencies_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_dependencies_test/1.0/source -> /usr/src/dkms_dependencies_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_dependencies_test-1.0
 echo 'Running autoinstall with failing test module and test module with dependencies on the failing module (expected error)'
 run_with_expected_error 11 dkms autoinstall -k "${KERNEL_VER}" << EOF
 Cleaning build area... done.
@@ -1341,13 +1327,10 @@ echo 'Adding the build-exclusive test module by directory'
 run_with_expected_output dkms add test/dkms_build_exclusive_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_build_exclusive_test/1.0/source -> /usr/src/dkms_build_exclusive_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_build_exclusive_test-1.0
 run_status_with_expected_output 'dkms_build_exclusive_test' << EOF
 dkms_build_exclusive_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_build_exclusive_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_build_exclusive_test-1.0 was not created'
-    return 1
-fi
 
 # Should this really fail?
 echo '(Not) building the build-exclusive test module'
@@ -1377,6 +1360,7 @@ echo 'Adding the test module by directory'
 run_with_expected_output dkms add test/dkms_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_test/1.0/source -> /usr/src/dkms_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_test-1.0
 run_status_with_expected_output 'dkms_test' << EOF
 dkms_test/1.0: added
 EOF
@@ -1417,6 +1401,7 @@ echo 'Adding failing test module by directory'
 run_with_expected_output dkms add test/dkms_failing_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_failing_test/1.0/source -> /usr/src/dkms_failing_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_failing_test-1.0
 
 echo "Running dkms autoinstall (1 x skip, 1 x fail, 1 x pass) (expected error)"
 run_with_expected_error 11 dkms autoinstall -k "${KERNEL_VER}" << EOF
@@ -1468,13 +1453,10 @@ echo 'Adding the build-exclusive dependencies test module by directory'
 run_with_expected_output dkms add test/dkms_build_exclusive_dependencies_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_build_exclusive_dependencies_test/1.0/source -> /usr/src/dkms_build_exclusive_dependencies_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_build_exclusive_dependencies_test-1.0
 run_status_with_expected_output 'dkms_build_exclusive_dependencies_test' << EOF
 dkms_build_exclusive_dependencies_test/1.0: added
 EOF
-if ! [[ -d /usr/src/dkms_build_exclusive_dependencies_test-1.0 ]] ; then
-    echo >&2 'Error: directory /usr/src/dkms_build_exclusive_dependencies_test-1.0 was not created'
-    return 1
-fi
 
 echo "Running dkms autoinstall (2 x skip, with dependency)"
 run_with_expected_output dkms autoinstall -k "${KERNEL_VER}" << EOF
@@ -1554,6 +1536,7 @@ echo "Adding the dkms_test-1.0 module with file /etc/os-release"
 run_with_expected_output dkms add test/dkms_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_test/1.0/source -> /usr/src/dkms_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_test-1.0
 run_status_with_expected_output 'dkms_test' << EOF
 dkms_test/1.0: added
 EOF
@@ -1575,6 +1558,7 @@ echo "Adding the dkms_test-1.0 module with file /usr/lib/os-release"
 run_with_expected_output dkms add test/dkms_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_test/1.0/source -> /usr/src/dkms_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_test-1.0
 run_status_with_expected_output 'dkms_test' << EOF
 dkms_test/1.0: added
 EOF
@@ -1609,6 +1593,7 @@ echo 'Adding the test module by directory'
 run_with_expected_output dkms add test/dkms_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_test/1.0/source -> /usr/src/dkms_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_test-1.0
 
 echo ' Removing symlink /var/lib/dkms/dkms_test/1.0/source'
 rm /var/lib/dkms/dkms_test/1.0/source
@@ -1660,6 +1645,7 @@ echo 'Adding the multiver test module 1.0 by directory'
 run_with_expected_output dkms add test/dkms_multiver_test/1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_multiver_test/1.0/source -> /usr/src/dkms_multiver_test-1.0
 EOF
+check_module_source_tree_created /usr/src/dkms_multiver_test-1.0
 
 echo 'Checking broken status'
 run_with_expected_output dkms status << EOF
