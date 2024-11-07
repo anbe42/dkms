@@ -724,9 +724,16 @@ rm /etc/dkms/framework.conf.d/dkms_test_framework.conf
 
 remove_module_source_tree /usr/src/dkms_test-1.0
 
-echo 'Testing dkms.conf with patches'
+echo 'Testing dkms.conf with patches and pre/post scripts'
 run_with_expected_output dkms add test/dkms_patches_test-1.0 << EOF
 Creating symlink /var/lib/dkms/dkms_patches_test/1.0/source -> /usr/src/dkms_patches_test-1.0
+Running the post_add script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh post_add
+post_add: line 1
+post_add: line 2/stderr
+post_add: line 3
+post_add: line 4/stderr
+post_add: line 5
 EOF
 check_module_source_tree_created /usr/src/dkms_patches_test-1.0
 run_status_with_expected_output 'dkms_patches_test' << EOF
@@ -745,10 +752,38 @@ Hunk #1 succeeded at 3 (offset 2 lines).
 patching file dkms_patches_test.c
 Hunk #1 succeeded at 18 (offset 2 lines).
  done.
+Running the pre_build script:
+/var/lib/dkms/dkms_patches_test/1.0/build/script.sh pre_build
+pre_build: line 1
+pre_build: line 2/stderr
+pre_build: line 3
+pre_build: line 4/stderr
+pre_build: line 5
 Cleaning build area... done.
 Building module(s)... done.
-${SIGNING_MESSAGE}Cleaning build area... done.
+${SIGNING_MESSAGE}Running the post_build script:
+/var/lib/dkms/dkms_patches_test/1.0/build/script.sh post_build
+post_build: line 1
+post_build: line 2/stderr
+post_build: line 3
+post_build: line 4/stderr
+post_build: line 5
+Cleaning build area... done.
+Running the pre_install script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh pre_install
+pre_install: line 1
+pre_install: line 2/stderr
+pre_install: line 3
+pre_install: line 4/stderr
+pre_install: line 5
 Installing /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_patches_test.ko${mod_compression_ext}
+Running the post_install script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh post_install
+post_install: line 1
+post_install: line 2/stderr
+post_install: line 3
+post_install: line 4/stderr
+post_install: line 5
 Running depmod... done.
 EOF
 run_status_with_expected_output 'dkms_patches_test' << EOF
@@ -760,6 +795,13 @@ run_with_expected_output dkms unbuild -k "${KERNEL_VER}" -m dkms_patches_test -v
 Module dkms_patches_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH}):
 Before uninstall, this module version was ACTIVE on this kernel.
 Deleting /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_patches_test.ko${mod_compression_ext}
+Running the post_remove script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh post_remove
+post_remove: line 1
+post_remove: line 2/stderr
+post_remove: line 3
+post_remove: line 4/stderr
+post_remove: line 5
 Running depmod... done.
 EOF
 run_status_with_expected_output 'dkms_patches_test' << EOF
@@ -785,10 +827,38 @@ Hunk #1 succeeded at 3 (offset 2 lines).
 patching file dkms_patches_test.c
 Hunk #1 succeeded at 18 (offset 2 lines).
  done.
+Running the pre_build script:
+/var/lib/dkms/dkms_patches_test/1.0/build/script.sh pre_build
+pre_build: line 1
+pre_build: line 2/stderr
+pre_build: line 3
+pre_build: line 4/stderr
+pre_build: line 5
 Cleaning build area... done.
 Building module(s)... done.
-${SIGNING_MESSAGE}Cleaning build area... done.
+${SIGNING_MESSAGE}Running the post_build script:
+/var/lib/dkms/dkms_patches_test/1.0/build/script.sh post_build
+post_build: line 1
+post_build: line 2/stderr
+post_build: line 3
+post_build: line 4/stderr
+post_build: line 5
+Cleaning build area... done.
+Running the pre_install script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh pre_install
+pre_install: line 1
+pre_install: line 2/stderr
+pre_install: line 3
+pre_install: line 4/stderr
+pre_install: line 5
 Installing /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_patches_test.ko${mod_compression_ext}
+Running the post_install script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh post_install
+post_install: line 1
+post_install: line 2/stderr
+post_install: line 3
+post_install: line 4/stderr
+post_install: line 5
 Running depmod... done.
 Cleaning build area... done.
 Building module(s)... done.
@@ -809,6 +879,13 @@ run_with_expected_output dkms remove -k "${KERNEL_VER}" -m dkms_patches_test -v 
 Module dkms_patches_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH}):
 Before uninstall, this module version was ACTIVE on this kernel.
 Deleting /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_patches_test.ko${mod_compression_ext}
+Running the post_remove script:
+/var/lib/dkms/dkms_patches_test/1.0/source/script.sh post_remove
+post_remove: line 1
+post_remove: line 2/stderr
+post_remove: line 3
+post_remove: line 4/stderr
+post_remove: line 5
 Running depmod... done.
 Deleting module dkms_patches_test/1.0 completely from the DKMS tree.
 EOF
