@@ -734,6 +734,7 @@ dkms_patches_test/1.0: added
 EOF
 
 echo ' Building and installing the test module'
+SIGNING_MESSAGE2=$SIGNING_MESSAGE
 set_signing_message "dkms_patches_test" "1.0"
 run_with_expected_output dkms install -k "${KERNEL_VER}" -m dkms_patches_test -v 1.0 << EOF
 applying patch patch2.patch...patching file Makefile
@@ -765,6 +766,15 @@ run_status_with_expected_output 'dkms_patches_test' << EOF
 dkms_patches_test/1.0: added
 EOF
 
+echo ' Adding a second module'
+run_with_expected_output dkms add test/dkms_test-1.0 << EOF
+Creating symlink /var/lib/dkms/dkms_test/1.0/source -> /usr/src/dkms_test-1.0
+EOF
+check_module_source_tree_created /usr/src/dkms_test-1.0
+run_status_with_expected_output 'dkms_test' << EOF
+dkms_test/1.0: added
+EOF
+
 echo " Running dkms autoinstall"
 run_with_expected_output dkms autoinstall -k "${KERNEL_VER}" << EOF
 applying patch patch2.patch...patching file Makefile
@@ -780,10 +790,18 @@ Building module(s)... done.
 ${SIGNING_MESSAGE}Cleaning build area... done.
 Installing /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_patches_test.ko${mod_compression_ext}
 Running depmod... done.
-Autoinstall on ${KERNEL_VER} succeeded for module(s) dkms_patches_test.
+Cleaning build area... done.
+Building module(s)... done.
+${SIGNING_MESSAGE2}Cleaning build area... done.
+Installing /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_test.ko${mod_compression_ext}
+Running depmod... done.
+Autoinstall on ${KERNEL_VER} succeeded for module(s) dkms_patches_test dkms_test.
 EOF
 run_status_with_expected_output 'dkms_patches_test' << EOF
 dkms_patches_test/1.0, ${KERNEL_VER}, ${KERNEL_ARCH}: installed
+EOF
+run_status_with_expected_output 'dkms_test' << EOF
+dkms_test/1.0, ${KERNEL_VER}, ${KERNEL_ARCH}: installed
 EOF
 
 echo ' Removing the test module'
@@ -797,7 +815,18 @@ EOF
 run_status_with_expected_output 'dkms_patches_test' << EOF
 EOF
 
-remove_module_source_tree /usr/src/dkms_patches_test-1.0
+echo ' Removing the second test module'
+run_with_expected_output dkms remove -k "${KERNEL_VER}" -m dkms_test -v 1.0 << EOF
+Module dkms_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH}):
+Before uninstall, this module version was ACTIVE on this kernel.
+Deleting /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_test.ko${mod_compression_ext}
+Running depmod... done.
+Deleting module dkms_test/1.0 completely from the DKMS tree.
+EOF
+run_status_with_expected_output 'dkms_test' << EOF
+EOF
+
+remove_module_source_tree /usr/src/dkms_patches_test-1.0 /usr/src/dkms_test-1.0
 
 echo 'Checking that the environment is clean again'
 check_no_dkms_test
