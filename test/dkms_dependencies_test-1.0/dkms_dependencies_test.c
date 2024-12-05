@@ -7,17 +7,17 @@
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("A Simple dkms test module");
 
-static int __init dkms_test_init(void)
+static int __init dkms_dependencies_test_init(void)
 {
     printk(KERN_INFO "DKMS Test Module -%s Loaded\n",DKMS_TEST_VER);
     return 0;
 }
 
-static void __exit dkms_test_cleanup(void)
+static void __exit dkms_dependencies_test_cleanup(void)
 {
     printk(KERN_INFO "Cleaning up after dkms test module.\n");
 }
 
-module_init(dkms_test_init);
-module_exit(dkms_test_cleanup);
+module_init(dkms_dependencies_test_init);
+module_exit(dkms_dependencies_test_cleanup);
 MODULE_VERSION(DKMS_TEST_VER);
