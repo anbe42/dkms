@@ -466,9 +466,13 @@ echo 'Checking make.log content'
 check_make_log_content /var/lib/dkms/dkms_test/1.0/${KERNEL_VER}/${KERNEL_ARCH}/log/make.log << EOF
 DKMS make.log for dkms_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
 <timestamp>
+Building module(s)
+# command: make -j1 KERNELRELEASE=${KERNEL_VER} -C /lib/modules/${KERNEL_VER}/build M=build
   CC      dkms_test.o
   CC      dkms_test.mod.o
   LD      dkms_test.ko
+
+# exit code: 0
 EOF
 
 echo 'Building the test module again'
@@ -1665,9 +1669,13 @@ echo 'Checking make.log content'
 check_make_log_content /var/lib/dkms/dkms_noisy_test/1.0/${KERNEL_VER}/${KERNEL_ARCH}/log/make.log << EOF
 DKMS make.log for dkms_noisy_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
 <timestamp>
+Building module(s)
+# command: make -j1 KERNELRELEASE=${KERNEL_VER} -C /lib/modules/${KERNEL_VER}/build M=build
   CC      dkms_noisy_test.o
   CC      dkms_noisy_test.mod.o
   LD      dkms_noisy_test.ko
+
+# exit code: 0
 EOF
 
 echo 'Unbuilding the noisy test module'
