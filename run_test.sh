@@ -242,6 +242,7 @@ generalize_make_log() {
     sed -r -i '
 # timestamp on line 2
 2s/.*/<timestamp>/
+/# elapsed time:/s/[0-9]+:[0-9]+:[0-9]+/<hh:mm:ss>/
 
 # minimize and unify compilation output between distributions
 # we are not really interested in the compilation details
@@ -473,6 +474,7 @@ Building module(s)
   LD      dkms_test.ko
 
 # exit code: 0
+# elapsed time: <hh:mm:ss>
 EOF
 
 echo 'Building the test module again'
@@ -1676,6 +1678,7 @@ Building module(s)
   LD      dkms_noisy_test.ko
 
 # exit code: 0
+# elapsed time: <hh:mm:ss>
 EOF
 
 echo 'Unbuilding the noisy test module'
