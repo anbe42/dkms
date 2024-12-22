@@ -1635,7 +1635,9 @@ pre_build: line 3
 pre_build: line 4/stderr
 pre_build: line 5
 
-Cleaning build area... done.
+Cleaning build area...(bad exit status: 2)
+Failed command:
+make clean
 Building module(s)... done.
 ${SIGNING_MESSAGE_noisy}
 Running the post_build script:
@@ -1645,7 +1647,9 @@ post_build: line 2/stderr
 post_build: line 3
 post_build: line 4/stderr
 post_build: line 5
-Cleaning build area... done.
+Cleaning build area...(bad exit status: 2)
+Failed command:
+make clean
 
 
 Running the pre_install script:
@@ -1724,7 +1728,9 @@ pre_build: line 3
 pre_build: line 4/stderr
 pre_build: line 5
 
-Cleaning build area... done.
+Cleaning build area...(bad exit status: 2)
+Failed command:
+make clean
 Building module(s)... done.
 ${SIGNING_MESSAGE_noisy}
 Running the post_build script:
@@ -1734,7 +1740,9 @@ post_build: line 2/stderr
 post_build: line 3
 post_build: line 4/stderr
 post_build: line 5
-Cleaning build area... done.
+Cleaning build area...(bad exit status: 2)
+Failed command:
+make clean
 
 
 Running the pre_install script:
