@@ -402,6 +402,8 @@ else
 "
 fi
 
+DKMS_VERSION="$(dkms --version)"
+
 
 echo 'Preparing a clean test environment'
 clean_dkms_env
@@ -465,7 +467,7 @@ EOF
 
 echo 'Checking make.log content'
 check_make_log_content /var/lib/dkms/dkms_test/1.0/${KERNEL_VER}/${KERNEL_ARCH}/log/make.log << EOF
-DKMS make.log for dkms_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
+DKMS (${DKMS_VERSION}) make.log for dkms_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
 <timestamp>
 Building module(s)
 # command: make -j1 KERNELRELEASE=${KERNEL_VER} -C /lib/modules/${KERNEL_VER}/build M=build
@@ -1669,7 +1671,7 @@ EOF
 
 echo 'Checking make.log content'
 check_make_log_content /var/lib/dkms/dkms_noisy_test/1.0/${KERNEL_VER}/${KERNEL_ARCH}/log/make.log << EOF
-DKMS make.log for dkms_noisy_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
+DKMS (${DKMS_VERSION}) make.log for dkms_noisy_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
 <timestamp>
 Building module(s)
 # command: make -j1 KERNELRELEASE=${KERNEL_VER} -C /lib/modules/${KERNEL_VER}/build M=build
