@@ -1530,12 +1530,8 @@ echo 'Building and installing the test module with patches'
 set_signing_message "dkms_patches_test" "1.0"
 SIGNING_MESSAGE_patches="$SIGNING_MESSAGE"
 run_with_expected_output dkms install -k "${KERNEL_VER}" -m dkms_patches_test -v 1.0 << EOF
-${SIGNING_PROLOGUE}applying patch patch1.patch...patching file Makefile
-patching file dkms_patches_test.c
- done.
-applying patch subdir/patch2.patch...patching file Makefile
-patching file dkms_patches_test.c
- done.
+${SIGNING_PROLOGUE}Applying patch patch1.patch... done.
+Applying patch subdir/patch2.patch... done.
 
 Cleaning build area... done.
 Building module(s)... done.
@@ -1630,14 +1626,8 @@ echo 'Building and installing the noisy test module'
 set_signing_message "dkms_noisy_test" "1.0"
 SIGNING_MESSAGE_noisy="$SIGNING_MESSAGE"
 run_with_expected_output dkms install -k "${KERNEL_VER}" -m dkms_noisy_test -v 1.0 << EOF
-${SIGNING_PROLOGUE}applying patch patch2.patch...patching file Makefile
-patching file dkms_noisy_test.c
- done.
-applying patch patch1.patch...patching file Makefile
-Hunk #1 succeeded at 3 (offset 2 lines).
-patching file dkms_noisy_test.c
-Hunk #1 succeeded at 18 (offset 2 lines).
- done.
+${SIGNING_PROLOGUE}Applying patch patch2.patch... done.
+Applying patch patch1.patch... done.
 
 Running the pre_build script:
 /var/lib/dkms/dkms_noisy_test/1.0/build/script.sh pre_build
@@ -1690,6 +1680,22 @@ echo 'Checking make.log content'
 check_make_log_content /var/lib/dkms/dkms_noisy_test/1.0/${KERNEL_VER}/${KERNEL_ARCH}/log/make.log << EOF
 DKMS (${DKMS_VERSION}) make.log for dkms_noisy_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
 <timestamp>
+Applying patch patch2.patch
+# command: patch -p1 < ./patches/patch2.patch
+patching file Makefile
+patching file dkms_noisy_test.c
+
+# exit code: 0
+# elapsed time: <hh:mm:ss>
+Applying patch patch1.patch
+# command: patch -p1 < ./patches/patch1.patch
+patching file Makefile
+Hunk #1 succeeded at 3 (offset 2 lines).
+patching file dkms_noisy_test.c
+Hunk #1 succeeded at 18 (offset 2 lines).
+
+# exit code: 0
+# elapsed time: <hh:mm:ss>
 Cleaning build area
 # command: make clean
 make -C /lib/modules/${UNAME_R}/build M=/var/lib/dkms/dkms_noisy_test/1.0/build clean
@@ -1739,14 +1745,8 @@ EOF
 echo "Running dkms autoinstall with multiple modules"
 run_with_expected_output dkms autoinstall -k "${KERNEL_VER}" << EOF
 Autoinstall of module dkms_noisy_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
-${SIGNING_PROLOGUE}applying patch patch2.patch...patching file Makefile
-patching file dkms_noisy_test.c
- done.
-applying patch patch1.patch...patching file Makefile
-Hunk #1 succeeded at 3 (offset 2 lines).
-patching file dkms_noisy_test.c
-Hunk #1 succeeded at 18 (offset 2 lines).
- done.
+${SIGNING_PROLOGUE}Applying patch patch2.patch... done.
+Applying patch patch1.patch... done.
 
 Running the pre_build script:
 /var/lib/dkms/dkms_noisy_test/1.0/build/script.sh pre_build
@@ -1791,12 +1791,8 @@ post_install: line 4/stderr
 post_install: line 5
 Running depmod... done.
 Autoinstall of module dkms_patches_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
-${SIGNING_PROLOGUE}applying patch patch1.patch...patching file Makefile
-patching file dkms_patches_test.c
- done.
-applying patch subdir/patch2.patch...patching file Makefile
-patching file dkms_patches_test.c
- done.
+${SIGNING_PROLOGUE}Applying patch patch1.patch... done.
+Applying patch subdir/patch2.patch... done.
 
 Cleaning build area... done.
 Building module(s)... done.
