@@ -1571,13 +1571,11 @@ echo 'Building and installing the test module with pre/post scripts'
 set_signing_message "dkms_scripts_test" "1.0"
 SIGNING_MESSAGE_scripts="$SIGNING_MESSAGE"
 run_with_expected_output dkms install -k "${KERNEL_VER}" -m dkms_scripts_test -v 1.0 << EOF
-${SIGNING_PROLOGUE}
-Running the pre_build script:
+${SIGNING_PROLOGUE}Running the pre_build script... done.
 
 Cleaning build area... done.
 Building module(s)... done.
-${SIGNING_MESSAGE_scripts}
-Running the post_build script:
+${SIGNING_MESSAGE_scripts}Running the post_build script... done.
 Cleaning build area... done.
 
 
@@ -1628,27 +1626,13 @@ SIGNING_MESSAGE_noisy="$SIGNING_MESSAGE"
 run_with_expected_output dkms install -k "${KERNEL_VER}" -m dkms_noisy_test -v 1.0 << EOF
 ${SIGNING_PROLOGUE}Applying patch patch2.patch... done.
 Applying patch patch1.patch... done.
-
-Running the pre_build script:
-/var/lib/dkms/dkms_noisy_test/1.0/build/script.sh pre_build
-pre_build: line 1
-pre_build: line 2/stderr
-pre_build: line 3
-pre_build: line 4/stderr
-pre_build: line 5
+Running the pre_build script... done.
 
 Cleaning build area...(bad exit status: 2)
 Failed command:
 make clean
 Building module(s)... done.
-${SIGNING_MESSAGE_noisy}
-Running the post_build script:
-/var/lib/dkms/dkms_noisy_test/1.0/build/script.sh post_build
-post_build: line 1
-post_build: line 2/stderr
-post_build: line 3
-post_build: line 4/stderr
-post_build: line 5
+${SIGNING_MESSAGE_noisy}Running the post_build script... done.
 Cleaning build area...(bad exit status: 2)
 Failed command:
 make clean
@@ -1696,6 +1680,17 @@ Hunk #1 succeeded at 18 (offset 2 lines).
 
 # exit code: 0
 # elapsed time: <hh:mm:ss>
+Running the pre_build script
+# command: cd /var/lib/dkms/dkms_noisy_test/1.0/build/ && /var/lib/dkms/dkms_noisy_test/1.0/build/script.sh pre_build
+/var/lib/dkms/dkms_noisy_test/1.0/build/script.sh pre_build
+pre_build: line 1
+pre_build: line 2/stderr
+pre_build: line 3
+pre_build: line 4/stderr
+pre_build: line 5
+
+# exit code: 0
+# elapsed time: <hh:mm:ss>
 Cleaning build area
 # command: make clean
 make -C /lib/modules/${UNAME_R}/build M=/var/lib/dkms/dkms_noisy_test/1.0/build clean
@@ -1709,6 +1704,17 @@ Building module(s)
   CC      dkms_noisy_test.o
   CC      dkms_noisy_test.mod.o
   LD      dkms_noisy_test.ko
+
+# exit code: 0
+# elapsed time: <hh:mm:ss>
+Running the post_build script
+# command: cd /var/lib/dkms/dkms_noisy_test/1.0/build/ && /var/lib/dkms/dkms_noisy_test/1.0/build/script.sh post_build
+/var/lib/dkms/dkms_noisy_test/1.0/build/script.sh post_build
+post_build: line 1
+post_build: line 2/stderr
+post_build: line 3
+post_build: line 4/stderr
+post_build: line 5
 
 # exit code: 0
 # elapsed time: <hh:mm:ss>
@@ -1747,27 +1753,13 @@ run_with_expected_output dkms autoinstall -k "${KERNEL_VER}" << EOF
 Autoinstall of module dkms_noisy_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
 ${SIGNING_PROLOGUE}Applying patch patch2.patch... done.
 Applying patch patch1.patch... done.
-
-Running the pre_build script:
-/var/lib/dkms/dkms_noisy_test/1.0/build/script.sh pre_build
-pre_build: line 1
-pre_build: line 2/stderr
-pre_build: line 3
-pre_build: line 4/stderr
-pre_build: line 5
+Running the pre_build script... done.
 
 Cleaning build area...(bad exit status: 2)
 Failed command:
 make clean
 Building module(s)... done.
-${SIGNING_MESSAGE_noisy}
-Running the post_build script:
-/var/lib/dkms/dkms_noisy_test/1.0/build/script.sh post_build
-post_build: line 1
-post_build: line 2/stderr
-post_build: line 3
-post_build: line 4/stderr
-post_build: line 5
+${SIGNING_MESSAGE_noisy}Running the post_build script... done.
 Cleaning build area...(bad exit status: 2)
 Failed command:
 make clean
@@ -1801,13 +1793,11 @@ ${SIGNING_MESSAGE_patches}Cleaning build area... done.
 Installing /lib/modules/${KERNEL_VER}/${expected_dest_loc}/dkms_patches_test.ko${mod_compression_ext}
 Running depmod... done.
 Autoinstall of module dkms_scripts_test/1.0 for kernel ${KERNEL_VER} (${KERNEL_ARCH})
-${SIGNING_PROLOGUE}
-Running the pre_build script:
+${SIGNING_PROLOGUE}Running the pre_build script... done.
 
 Cleaning build area... done.
 Building module(s)... done.
-${SIGNING_MESSAGE_scripts}
-Running the post_build script:
+${SIGNING_MESSAGE_scripts}Running the post_build script... done.
 Cleaning build area... done.
 
 

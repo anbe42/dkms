@@ -954,12 +954,16 @@ run_build_script() {
     esac
     run="$dkms_tree/$module/$module_version/$script_type/$2"
     if [[ -x ${run%% *} ]]; then
+        if [[ $3 ]]; then
+            invoke_command "cd $dkms_tree/$module/$module_version/$script_type/ && $run" "Running the $1 script" "$3" background || exit $?
+        else
         echo ""
         echo "Running the $1 script:"
         (
             cd "$dkms_tree/$module/$module_version/$script_type/"
             exec $run
         )
+        fi
     else
         echo ""
         warn "The $1 script is not executable."
@@ -1258,7 +1262,7 @@ prepare_and_actual_build()
     fi
 
     # Run the pre_build script
-    run_build_script pre_build "$pre_build"
+    run_build_script pre_build "$pre_build" "$build_log"
 
     echo ""
 
@@ -1323,7 +1327,7 @@ prepare_and_actual_build()
     done
 
     # Run the post_build script
-    run_build_script post_build "$post_build"
+    run_build_script post_build "$post_build" "$build_log"
 
     # Run the clean commands
     cd "$dkms_tree/$module/$module_version/build"
