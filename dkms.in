@@ -2579,6 +2579,7 @@ autoinstall() {
                 else
                     failed_modules[${#failed_modules[@]}]="$m($status)"
                 fi
+                echo ""
             else
                 next_install[${#next_install[@]}]="$modv"
             fi
@@ -2656,6 +2657,7 @@ kernel_prerm()
         is_module_built "$m" "$v" "$kernelver" "$arch" || continue
         echo "dkms: removing module $m/$v for kernel $kernelver ($arch)" >&2
         (module="$m" module_version="$v" unbuild_module) || failed="$failed $m/$v($?)"
+        echo ""
     done < <(list_module_version_combos)
 
     if [[ -f $dkms_tree/depmod-pending-$kernelver-$arch ]]; then
