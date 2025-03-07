@@ -1490,6 +1490,7 @@ do_install()
     is_module_built "$module" "$module_version" "$kernelver" "$arch" || do_build
     local base_dir
     base_dir="$dkms_tree/$module/$module_version/$kernelver/$arch"
+    local i
 
     # Save the status of $force
     tmp_force="$force"
@@ -1512,6 +1513,15 @@ do_install()
     # Read the conf file
     read_conf_or_die "$kernelver" "$arch"
 
+    # Validate build completeness
+    for ((i=0; i < ${#dest_module_name[@]}; i++)); do
+        local m
+        local f
+        m=${dest_module_name[i]}
+        f=$(compressed_or_uncompressed "$base_dir/module" "$m")
+        [[ $f && -f $f ]] || die 6 "Missing module $m in $base_dir/module"
+    done
+
     # Check that its not already installed (kernel symlink)
     is_module_installed "$module" "$module_version" "$kernelver" "$arch" && die 5 \
         "This module/version combo is already installed for kernel $kernelver ($arch)."
@@ -1528,7 +1538,7 @@ do_install()
     local count
     lib_tree="$install_tree/$kernelver"
 
-    for ((count=0; count < ${#built_module_name[@]}; count++)); do
+    for ((count=0; count < ${#dest_module_name[@]}; count++)); do
         # Check this version against what is already in the kernel
         check_version_sanity "$kernelver" "$arch" "$obsolete_by" "${dest_module_name[$count]}" || continue
 
@@ -1593,12 +1603,13 @@ do_install()
         [[ $symlink_modules ]] && symlink="-s"
         local toinstall
         toinstall=$(compressed_or_uncompressed "$base_dir/module" "$m")
-        cp -f $symlink "$toinstall" "$install_tree/$kernelver${dest_module_location[$count]}/${toinstall##*/}"
+        [[ $toinstall ]] || continue
+        cp -f $symlink "$toinstall" "$install_tree/$kernelver${dest_module_location[$count]}/${toinstall##*/}" || die 6 "Copying '$toinstall' failed"
         any_module_installed=1
 
     done
 
-    if ((${#built_module_name[@]} > 0)) && [[ ! "${any_module_installed}" ]]; then
+    if ((${#dest_module_name[@]} > 0)) && [[ ! "${any_module_installed}" ]]; then
         die 6 "Installation aborted."
     fi
 
@@ -1645,7 +1656,7 @@ list_each_installed_module()
     local count
     local real_dest_module_location
     local mod
-    for ((count=0; count < ${#built_module_name[@]}; count++)); do
+    for ((count=0; count < ${#dest_module_name[@]}; count++)); do
         real_dest_module_location="$(find_actual_dest_module_location "$1" "$count" "$2" "$3")"
         mod=$(compressed_or_uncompressed "$install_tree/$2${real_dest_module_location}" "${dest_module_name[$count]}")
         echo "$mod"
