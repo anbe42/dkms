@@ -1245,6 +1245,7 @@ do_build()
     local bd_missing
     local status
     local mvka
+    local count
 
     # Check that the module has not already been built for this kernel
     [[ -d $base_dir ]] && die 3 \
@@ -1429,6 +1430,15 @@ do_build()
 
     # Run the post_build script
     run_build_script post_build "$post_build" "$build_log"
+
+    # Validate build completeness
+    for ((count=0; count < ${#dest_module_name[@]}; count++)); do
+        local m
+        local f
+        m=${dest_module_name[$count]}
+        f=$(compressed_or_uncompressed "$base_dir/module" "$m")
+        [[ $f && -f $f ]] || die 7 "Missing module '$m' in $base_dir/module"
+    done
 
     # Run the clean commands
     invoke_command "$clean" "Cleaning build area" "$build_log" background
