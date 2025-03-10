@@ -1511,6 +1511,8 @@ do_install()
     local -r original_module_backup_dir="$dkms_tree/$module/original_module/$kernelver/$arch"
     local -r active_link="$dkms_tree/$module/kernel-$kernelver-$arch"
     local i
+    local symlink
+    [[ $symlink_modules ]] && symlink="-s"
 
     # Save the status of $force
     local -r tmp_force="$force"
@@ -1616,14 +1618,16 @@ do_install()
         fi
 
         # Copy module to its location
-        echo "Installing $install_tree/$kernelver${dest_module_location[$count]}/${dest_module_name[$count]}$module_suffix"
-        mkdir -p "$install_tree/$kernelver${dest_module_location[$count]}"
-        local symlink=
-        [[ $symlink_modules ]] && symlink="-s"
         local toinstall
+        local dest_dir
+        local dest_name
         toinstall=$(compressed_or_uncompressed "$base_dir/module" "$m")
         [[ $toinstall ]] || continue
-        cp -f $symlink "$toinstall" "$install_tree/$kernelver${dest_module_location[$count]}/${toinstall##*/}" || die 6 "Copying '$toinstall' failed"
+        dest_dir="$install_tree/$kernelver${dest_module_location[$count]}"
+        dest_name=${toinstall##*/}
+        echo "Installing $dest_dir/$dest_name"
+        mkdir -p "$dest_dir"
+        cp -f $symlink "$toinstall" "$dest_dir/$dest_name" || die 6 "Copying '$toinstall' failed"
         any_module_installed=1
 
     done
