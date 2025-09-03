@@ -225,14 +225,16 @@ run_with_expected_error() {
     local output_log=test_cmd_output.log
     local expected_output_log=test_cmd_expected_output.log
     local error_code=0
+    local make_log
 
     shift
     cat > "${expected_output_log}"
     stdbuf -o L -e L "$@" > "${output_log}" 2>&1 || error_code=$?
+    make_log=$(awk '{print $2}' "${output_log}" | grep make.log || true)
     if [[ "${error_code}" != "${expected_error_code}" ]] ; then
         echo "Error: command '$*' returned status ${error_code} instead of expected ${expected_error_code}"
         cat "${output_log}"
-        [ -z "${extra_output_log}" ] || cat "${extra_output_log}"
+        [ -z "${make_log}" ] || cat "${make_log}"
         rm "${expected_output_log}" "${output_log}"
         return 1
     fi
@@ -521,7 +523,6 @@ EOF
 
 echo 'Building the test module'
 set_signing_message "dkms_test" "1.0"
-extra_output_log="/var/lib/dkms/dkms_test/1.0/build/make.log" \
 run_with_expected_output dkms build -k "${KERNEL_VER}" -m dkms_test -v 1.0 << EOF
 ${SIGNING_PROLOGUE}
 Building module(s)... done.${SIGNING_MESSAGE}
