@@ -77,7 +77,7 @@ jobs:
       if: matrix.distro.name == 'debian'
       run: |
         apt-get update -q
-        apt-get install -qy make linux-headers-amd64 linux-image-amd64 openssl xz-utils patch
+        apt-get install -qy make linux-headers-amd64 linux-image-amd64 openssl xz-utils patch binutils
         make install-debian
 
     - name: Install Gentoo Linux dependencies
